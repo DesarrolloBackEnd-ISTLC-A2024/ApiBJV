@@ -1,0 +1,98 @@
+CREATE TABLE [dbo].[Actor](
+	[id_actor] [int] IDENTITY(1,1) NOT NULL,
+	[nombre] [nvarchar](100) NOT NULL,
+	[apellido] [varchar](100) NULL,
+	[fecha_nacimiento] [varchar](50) NULL,
+	[nacionalidad] [varchar](100) NULL,
+	[genero_biografia] [varchar](50) NULL,
+	[premios] [varchar](255) NULL,
+	[numero_peliculas] [int] NULL,
+	[fecha_creacion] [varchar](50) NULL,
+	
+	CREATE TABLE [dbo].[Pelicula](
+	[id_pelicula] [int] IDENTITY(1,1) NOT NULL,
+	[titulo] [varchar](255) NOT NULL,
+	[genero] [varchar](100) NULL,
+	[director] [varchar](255) NULL,
+	[anio_estreno] [int] NULL,
+	[duracion] [int] NULL,
+	[sinopsis] [text] NULL,
+	[fecha_creacion] [datetime] NULL,
+	
+	
+	CREATE PROCEDURE [dbo].[InsertActor]
+    @nombre NVARCHAR(100),
+    @apellido VARCHAR(100) = NULL,
+    @fecha_nacimiento VARCHAR(50) = NULL,
+    @nacionalidad VARCHAR(100) = NULL,
+    @genero_biografia VARCHAR(50) = NULL,
+    @premios VARCHAR(255) = NULL,
+    @numero_peliculas INT = NULL,
+    @fecha_creacion VARCHAR(50) = NULL
+AS
+BEGIN
+    SET NOCOUNT ON;
+
+    -- Inserta los valores en la tabla Actor
+    INSERT INTO [dbo].[Actor] (
+        nombre,
+        apellido,
+        fecha_nacimiento,
+        nacionalidad,
+        genero_biografia,
+        premios,
+        numero_peliculas,
+        fecha_creacion
+    )
+    VALUES (
+        @nombre,
+        @apellido,
+        @fecha_nacimiento,
+        @nacionalidad,
+        @genero_biografia,
+        @premios,
+        @numero_peliculas,
+        ISNULL(@fecha_creacion, CONVERT(VARCHAR, GETDATE(), 120)) -- Si no se pasa la fecha, se asigna la fecha actual
+    );
+
+    -- Devuelve el ID del nuevo actor insertado
+    SELECT SCOPE_IDENTITY() AS NewActorID;
+END;
+
+
+
+
+CREATE PROCEDURE [dbo].[InsertPelicula]
+    @titulo VARCHAR(255),
+    @genero VARCHAR(100) = NULL,
+    @director VARCHAR(255) = NULL,
+    @anio_estreno INT = NULL,
+    @duracion INT = NULL,
+    @sinopsis TEXT = NULL,
+    @fecha_creacion DATETIME = NULL
+AS
+BEGIN
+    SET NOCOUNT ON;
+
+    INSERT INTO [dbo].[Pelicula] (
+        [titulo],
+        [genero],
+        [director],
+        [anio_estreno],
+        [duracion],
+        [sinopsis],
+        [fecha_creacion]
+    )
+    VALUES (
+        @titulo,
+        @genero,
+        @director,
+        @anio_estreno,
+        @duracion,
+        @sinopsis,
+        ISNULL(@fecha_creacion, GETDATE()) -- Usar la fecha actual si no se proporciona
+    );
+
+    -- Optional: Return the ID of the newly inserted record
+    SELECT SCOPE_IDENTITY() AS NewPeliculaId;
+END
